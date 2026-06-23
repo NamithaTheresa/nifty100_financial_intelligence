@@ -1,0 +1,95 @@
+import sqlite3
+
+# Create database
+conn = sqlite3.connect("nifty100.db")
+
+# Create cursor
+cursor = conn.cursor()
+
+# Create companies table
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS companies (
+    id INTEGER PRIMARY KEY,
+    company_logo TEXT,
+    company_name TEXT,
+    chart_link TEXT,
+    about_company TEXT,
+    website TEXT,
+    nse_profile TEXT,
+    bse_profile TEXT,
+    face_value REAL,
+    book_value REAL,
+    roce_percentage REAL,
+    roe_percentage REAL
+)
+""")
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS profitandloss (
+    id INTEGER,
+    company_id TEXT,
+    year TEXT,
+    sales REAL,
+    expenses REAL,
+    operating_profit REAL,
+    net_profit REAL,
+    eps REAL,
+    FOREIGN KEY(company_id) REFERENCES companies(id)
+)
+""")
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS balancesheet (
+    id INTEGER,
+    company_id TEXT,
+    year TEXT,
+    total_assets REAL,
+    total_liabilities REAL,
+    borrowings REAL,
+    FOREIGN KEY(company_id) REFERENCES companies(id)
+)
+""")
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS cashflow (
+    id INTEGER,
+    company_id TEXT,
+    year TEXT,
+    operating_activity REAL,
+    net_cash_flow REAL,
+    FOREIGN KEY(company_id) REFERENCES companies(id)
+)
+""")
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS analysis (
+    id INTEGER,
+    company_id TEXT,
+    compounded_sales_growth TEXT,
+    compounded_profit_growth TEXT,
+    roe TEXT,
+    FOREIGN KEY(company_id) REFERENCES companies(id)
+)
+""")
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS documents (
+    id INTEGER,
+    company_id TEXT,
+    year INTEGER,
+    annual_report TEXT,
+    FOREIGN KEY(company_id) REFERENCES companies(id)
+)
+""")
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS prosandcons (
+    id INTEGER,
+    company_id TEXT,
+    pros TEXT,
+    cons TEXT,
+    FOREIGN KEY(company_id) REFERENCES companies(id)
+)
+""")
+
+# Save changes
+conn.commit()
+
+# Close connection
+conn.close()
+
+print("All tables created successfully")
